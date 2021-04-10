@@ -1,13 +1,15 @@
-var ERC721MintableComplete = artifacts.require('ERC721MintableComplete');
+var ERC721MintableComplete = artifacts.require('CapstoneERC721Token');
 
 contract('TestERC721Mintable', accounts => {
 
     const account_one = accounts[0];
     const account_two = accounts[1];
+    const name = "RealEstetToken"
+    const symbol = "RET"
 
     describe('match erc721 spec', function () {
         beforeEach(async function () { 
-            this.contract = await ERC721MintableComplete.new({from: account_one});
+            this.contract = await ERC721MintableComplete.new(name, symbol, {from: account_one});
 
             // TODO: mint multiple tokens
         })
@@ -32,16 +34,31 @@ contract('TestERC721Mintable', accounts => {
 
     describe('have ownership properties', function () {
         beforeEach(async function () { 
-            this.contract = await ERC721MintableComplete.new({from: account_one});
+            this.contract = await ERC721MintableComplete.new(name, symbol,{from: account_one});
         })
+
+
+        it('should return contract owner', async function () { 
+            let owner = await this.contract.getOwner.call()
+            assert.equal(owner, account_one, 'Invalid contract owner')
+        })
+
+        it('should not be able to transfer the ownership if the caller is not the contract owner', async function () { 
+            try{
+            await this.contract.transferOwnership(account_two, {from: account_two});
+            }catch{}
+            assert.equal(await this.contract.getOwner.call(), account_one, "Anothorized caller changed the ownership");
+        })
+
+        it('should be able to transfer ownership to a new owner', async function () {
+            await this.contract.transferOwnership(account_two, {from: account_one});
+            assert.equal(await this.contract.getOwner.call(), account_two, "Could not transfer the ownership");
+        });
 
         it('should fail when minting when address is not contract owner', async function () { 
             
         })
 
-        it('should return contract owner', async function () { 
-            
-        })
 
     });
 })

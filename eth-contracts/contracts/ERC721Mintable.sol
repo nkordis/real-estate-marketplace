@@ -1,3 +1,4 @@
+
 pragma solidity ^0.5.0;
 
 import 'openzeppelin-solidity/contracts/utils/Address.sol';
@@ -7,17 +8,35 @@ import 'openzeppelin-solidity/contracts/token/ERC721/IERC721Receiver.sol';
 import "./Oraclize.sol";
 
 contract Ownable {
-    //  TODO's
-    //  1) create a private '_owner' variable of type address with a public getter function
-    //  2) create an internal constructor that sets the _owner var to the creater of the contract 
-    //  3) create an 'onlyOwner' modifier that throws if called by any account other than the owner.
-    //  4) fill out the transferOwnership function
-    //  5) create an event that emits anytime ownerShip is transfered (including in the constructor)
+    
+    //  private '_owner' variable of type address with a public getter function
+        address private _owner;
 
+    function getOwner() public view returns (address) {
+        return _owner;
+    }
+
+    //  internal constructor that sets the _owner var to the creater of the contract 
+        constructor() internal {
+            _owner = msg.sender;
+            emit OwnershipTransferred(address(0), _owner);
+        }
+
+    //  'onlyOwner' modifier that throws if called by any account other than the owner.
+        modifier onlyOwner() {
+        require(msg.sender == _owner, "Caller is not the owner of the contract");
+        _;
+    }
+    
+    //  event that emits anytime ownerShip is transfered (including in the constructor)
+    event OwnershipTransferred(address oldOwner, address newOwner);
+
+    //  transferOwnership function to transfer control of the contract to a newOwner
     function transferOwnership(address newOwner) public onlyOwner {
-        // TODO add functionality to transfer control of the contract to a newOwner.
         // make sure the new owner is a real address
-
+        require(newOwner != address(0), "New owner's address is not real");
+        _owner = newOwner;
+        emit OwnershipTransferred(msg.sender, _owner);
     }
 }
 
@@ -27,6 +46,8 @@ contract Ownable {
 //  3) create an internal constructor that sets the _paused variable to false
 //  4) create 'whenNotPaused' & 'paused' modifier that throws in the appropriate situation
 //  5) create a Paused & Unpaused event that emits the address that triggered the event
+
+contract Pausable is Ownable{}
 
 contract ERC165 {
     bytes4 private constant _INTERFACE_ID_ERC165 = 0x01ffc9a7;
@@ -415,9 +436,13 @@ contract ERC721Enumerable is ERC165, ERC721 {
 
 contract ERC721Metadata is ERC721Enumerable, usingOraclize {
     
-    // TODO: Create private vars for token _name, _symbol, and _baseTokenURI (string)
+    // private vars for token _name, _symbol, and _baseTokenURI (string)
+    string private _name;
+    string private _symbol;
+    string private _baseTokenURI;
 
-    // TODO: create private mapping of tokenId's to token uri's called '_tokenURIs'
+    // private mapping of tokenId's to token uri's 
+    mapping(uint256 => string) private _tokenURIs;
 
     bytes4 private constant _INTERFACE_ID_ERC721_METADATA = 0x5b5e139f;
     /*
@@ -429,7 +454,10 @@ contract ERC721Metadata is ERC721Enumerable, usingOraclize {
 
 
     constructor (string memory name, string memory symbol, string memory baseTokenURI) public {
-        // TODO: set instance var values
+        //set instance var values
+        _name = name;
+        _symbol = symbol;
+        _baseTokenURI = baseTokenURI;
 
         _registerInterface(_INTERFACE_ID_ERC721_METADATA);
     }
@@ -459,6 +487,14 @@ contract ERC721Metadata is ERC721Enumerable, usingOraclize {
 //      -takes in a 'to' address, tokenId, and tokenURI as parameters
 //      -returns a true boolean upon completion of the function
 //      -calls the superclass mint and setTokenURI functions
+contract CapstoneERC721Token is ERC721Metadata {
 
+    constructor(string memory name, string memory symbol) 
+    ERC721Metadata(name, symbol, "https://s3-us-west-2.amazonaws.com/udacity-blockchain/capstone/") 
+    public
+    {
+    }
+
+}
 
 
