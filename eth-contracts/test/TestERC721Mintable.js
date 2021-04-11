@@ -81,4 +81,40 @@ contract('TestERC721Mintable', accounts => {
 
 
     });
+
+    describe('contract is Pausable ', function () {
+        beforeEach(async function () { 
+            this.contract = await ERC721MintableComplete.new(name, symbol,{from: account_one});
+        })
+
+        it('should fail when not the contract owner tries to pause the contract', async function () { 
+            let failed = false;
+
+            try{
+                await this.contract.pause({from: account_two})
+            }catch{
+                failed = true;
+            }
+            assert.equal(failed, true, "Caller is not the contract owner");
+        })
+
+        it('should let contract owner to pause a contract', async function () {
+            let tx = await this.contract.setPaused({from:account_one})
+            assert.equal(tx.logs[0].event, "Paused", 'Contract cannot pause the contract')
+        });
+
+        it('should not be able to mint if the contract is paused', async function () { 
+            await this.contract.setPaused({from:account_one})
+           let failed = false;
+
+            try {
+                await this.contract.mint(account_two, 1, {from: account_one});
+            } catch {
+                failed = true;
+            }
+    
+            assert.equal(failed, true, "Contract owner can mint a token even though the contract is paused");
+        });
+
+    });
 })
