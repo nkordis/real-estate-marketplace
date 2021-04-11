@@ -212,11 +212,16 @@ contract ERC721 is Pausable, ERC165 {
     // TIP: remember the functions to use for Counters. you can refresh yourself with the link above
     function _mint(address to, uint256 tokenId) internal {
 
-        // TODO revert if given tokenId already exists or given address is invalid
-  
-        // TODO mint tokenId to given address & increase token count of owner
+        // revert if given tokenId already exists or given address is invalid
+        require(!_exists(tokenId), "Token already exists");
+        require(to != address(0), "Address is invalid");
 
-        // TODO emit Transfer event
+        // mint tokenId to given address & increase token count of owner
+         _tokenOwner[tokenId] = to;
+         _ownedTokensCount[to].increment();
+
+        // emit Transfer event
+        emit Transfer(address(0), to, tokenId);
     }
 
     // @dev Internal function to transfer ownership of a given token ID to another address.
@@ -462,24 +467,37 @@ contract ERC721Metadata is ERC721Enumerable, usingOraclize {
         _registerInterface(_INTERFACE_ID_ERC721_METADATA);
     }
 
-    // TODO: create external getter functions for name, symbol, and baseTokenURI
+    // external getter functions for name, symbol, and baseTokenURI
+     function name() external view returns(string memory) {
+        return _name;
+    }
+
+    function symbol() external view returns(string memory) {
+        return _symbol;
+    }
+
+    function baseTokenURI() external view returns(string memory) {
+        return _baseTokenURI;
+    }
 
     function tokenURI(uint256 tokenId) external view returns (string memory) {
         require(_exists(tokenId));
         return _tokenURIs[tokenId];
-    }
+    } 
 
-
-    // TODO: Create an internal function to set the tokenURI of a specified tokenId
+    // nternal function to set the tokenURI of a specified tokenId
     // It should be the _baseTokenURI + the tokenId in string form
-    // TIP #1: use strConcat() from the imported oraclizeAPI lib to set the complete token URI
-    // TIP #2: you can also use uint2str() to convert a uint to a string
+    // use strConcat() from the imported oraclizeAPI lib to set the complete token URI
+    // use uint2str() to convert a uint to a string
         // see https://github.com/oraclize/ethereum-api/blob/master/oraclizeAPI_0.5.sol for strConcat()
     // require the token exists before setting
-
+     function setTokenURI (uint256 tokenId) internal {
+        require(_exists(tokenId), 'Token does not exist');
+        _tokenURIs[tokenId] = strConcat(_baseTokenURI, uint2str(tokenId));
+    }
 }
 
-//  TODO's: Create CustomERC721Token contract that inherits from the ERC721Metadata contract. You can name this contract as you please
+//  Create CustomERC721Token contract that inherits from the ERC721Metadata contract. 
 //  1) Pass in appropriate values for the inherited ERC721Metadata contract
 //      - make the base token uri: https://s3-us-west-2.amazonaws.com/udacity-blockchain/capstone/
 //  2) create a public mint() that does the following:
@@ -493,6 +511,12 @@ contract CapstoneERC721Token is ERC721Metadata {
     ERC721Metadata(name, symbol, "https://s3-us-west-2.amazonaws.com/udacity-blockchain/capstone/") 
     public
     {
+    }
+
+    function mint(address to, uint256 tokenId) onlyOwner() public returns (bool) {
+        super._mint(to, tokenId);
+        super.setTokenURI(tokenId);
+        return true;
     }
 
 }
