@@ -30,6 +30,7 @@ Transactions hashes:
 [Verifier Contract](https://rinkeby.etherscan.io/address/0x4dABD6845DcD50D7B8f6ba09E235780F0AF83910)
 
 ## How to test
+
 #### Install dependencies
 ```
 npm install
@@ -37,17 +38,20 @@ npm install
 #### Compile the contracts
 ```
 cd eth-contracts
+```
+Create the .infurakey file (and set the infura key if you will deploy it to Rinkeby test network after the tests).
+Create the .secret file (and set the seed phrase if you will deploy it to Rinkeby test network after the tests).
+
+```
 truffle compile
 ```
+
 #### Start Ganache on port 8545
 #### Run the tests
 ```
 truffle test
 ```
 #### Deploy the contracts to Rinkeby test network
-
-Create the .infurakey file and set the infura key.
-Create the .secret file and set the seed phrase.
 
 ```
 truffle migrate --network rinkeby
