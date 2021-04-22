@@ -6,13 +6,13 @@ Once the token has been verified you will place it on a blockchain market place 
 
 ## Token
 
-Name: ERC721Token
-Symbol: ERC721T
+Name: ERC721Token<br>
+Symbol: ERC721T<br>
 Token Address: [0x43adb4abd0307cdf84b583de9290d42dd75b5e21](https://rinkeby.etherscan.io/token/0x43adb4abd0307cdf84b583de9290d42dd75b5e21)
 
 ## OpenSea
 
-Initial Owner: [0x468c76d35fda0Af918b119caa874Ef6955436f20](https://rinkeby.opensea.io/accounts/0x468c76d35fda0Af918b119caa874Ef6955436f20)
+Initial Owner: [0x468c76d35fda0Af918b119caa874Ef6955436f20](https://rinkeby.opensea.io/accounts/0x468c76d35fda0Af918b119caa874Ef6955436f20)<br>
 Buyer: [0x442778d63284B04Ec3fDB14c3BA13e25646b90f9](https://rinkeby.opensea.io/accounts/0x442778d63284B04Ec3fDB14c3BA13e25646b90f9)
 
 Transactions hashes: 
@@ -26,7 +26,7 @@ Transactions hashes:
 
 ## Contracts
 
-[SolnSquareVerifier Contract](https://rinkeby.etherscan.io/address/0x43adb4abd0307cdf84b583de9290d42dd75b5e21)
+[SolnSquareVerifier Contract](https://rinkeby.etherscan.io/address/0x43adb4abd0307cdf84b583de9290d42dd75b5e21)<br>
 [Verifier Contract](https://rinkeby.etherscan.io/address/0x4dABD6845DcD50D7B8f6ba09E235780F0AF83910)
 
 ## How to test
@@ -39,7 +39,7 @@ npm install
 ```
 cd eth-contracts
 ```
-Create the .infurakey file (and set the infura key if you will deploy it to Rinkeby test network after the tests).
+Create the .infurakey file (and set the infura key if you will deploy it to Rinkeby test network after the tests).<br>
 Create the .secret file (and set the seed phrase if you will deploy it to Rinkeby test network after the tests).
 
 ```
